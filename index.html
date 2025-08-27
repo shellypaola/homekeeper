@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomeKeeper - Stop Household Waste</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 448px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            padding: 20px 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        /* Navigation Tabs */
+        .tabs {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 14px 8px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: none;
+            border-left: none;
+            border-right: none;
+            border-top: none;
+            color: #6b7280;
+        }
+
+        .tab.active {
+            border-bottom-color: #6366f1;
+            color: #6366f1;
+        }
+
+        .tab:hover:not(.active) {
+            color: #374151;
+        }
+
+        /* Content */
+        .content {
+            padding: 20px;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-card {
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid;
+        }
+
+        .kpi-inventory {
+            background-color: #ecfdf5;
+            border-color: #bbf7d0;
+        }
+
+        .kpi-wasted {
+            background-color: #fef2f2;
+            border-color: #fecaca;
+        }
+
+        .kpi-at-risk {
+            background-color: #fffbeb;
+            border-color: #fed7aa;
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .kpi-inventory .kpi-label { color: #059669; }
+        .kpi-wasted .kpi-label { color: #dc2626; }
+        .kpi-at-risk .kpi-label { color: #d97706; }
+
+        .kpi-value {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .kpi-inventory .kpi-value { color: #064e3b; }
+        .kpi-wasted .kpi-value { color: #7f1d1d; }
+        .kpi-at-risk .kpi-value { color: #92400e; }
+
+        .kpi-description {
+            font-size: 12px;
+        }
+
+        .kpi-inventory .kpi-description { color: #047857; }
+        .kpi-wasted .kpi-description { color: #b91c1c; }
+        .kpi-at-risk .kpi-description { color: #b45309; }
+
+        /* Scanner */
+        .scanner-card {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .scanner-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .scanner-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .scanner-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .scan-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .scan-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Notifications */
+        .notification-card {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: white;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification-card.urgent {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+        }
+
+        .notification-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .notification-items {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Category Cards */
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+
+        .category-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .category-icon-fridge { background-color: #dbeafe; }
+        .category-icon-pantry { background-color: #fef3c7; }
+        .category-icon-household { background-color: #e0e7ff; }
+
+        .category-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .category-info p {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .category-content {
+            padding: 20px;
+        }
+
+        /* Items List */
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .item-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s;
+        }
+
+        .item-card.expiring-soon {
+            border-color: #f59e0b;
+            background-color: #fffbeb;
+        }
+
+        .item-card.expired {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-emoji {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .item-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .item-meta {
+            font-size: 12px;
+            color: #6b7280;
+            margin: 2px 0 0 0;
+            line-height: 1.2;
+        }
+
+        .item-action {
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-finished {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .btn-finished:hover {
+            background-color: #059669;
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            color: #9ca3af;
+            padding: 32px 16px;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Shopping List */
+        .shopping-list-card {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .shopping-list-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .shopping-list-icon {
+            font-size: 24px;
+        }
+
+        .shopping-list-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .shopping-list-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .shopping-list-items {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 50;
+        }
+
+        .modal.show {
+            display: flex !important;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .quantity-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .quantity-btn {
+            padding: 16px 8px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .quantity-btn:hover,
+        .quantity-btn.selected {
+            border-color: #6366f1;
+            background-color: #f0f9ff;
+            color: #6366f1;
+        }
+
+        /* Percentage Grid */
+        .percentage-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .percentage-btn {
+            padding: 12px 8px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .percentage-btn:hover,
+        .percentage-btn.selected {
+            border-color: #6366f1;
+            background-color: #f0f9ff;
+            color: #6366f1;
+        }
+
+        .percentage-btn.waste {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            color: #ef4444;
+        }
+
+        .percentage-value {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .percentage-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-secondary {
+            flex: 1;
+            padding: 12px 16px;
+            color: #6b7280;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f3f4f6;
+        }
+
+        .btn-primary {
+            flex: 1;
+            padding: 12px 16px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: #4f46e5;
+        }
+
+        .shopping-question {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .shopping-question p {
+            color: #1e40af;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .shopping-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .btn-shopping {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-shopping-yes {
+            background-color: #10b981;
+            color: white;
+            border: none;
+        }
+
+        .btn-shopping-no {
+            background-color: transparent;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>HomeKeeper</h1>
+            <p>Stop household waste, save money</p>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="welcome-icon">🏠</div>
+            <h2 class="welcome-title">Welcome to HomeKeeper</h2>
+            <p class="welcome-subtitle">Track your household items, prevent waste, and never run out of essentials again.</p>
+            
+            <div class="scanner-card">
+                <div class="scanner-icon">📄</div>
+                <h3 class="scanner-title">Start by scanning a receipt</h3>
+                <p class="scanner-subtitle">We'll automatically organize everything for you</p>
+                <button onclick="scanDemoReceipt()" class="scan-btn">
+                    📷 Try Demo Receipt
+                </button>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="main-app" class="hidden">
+            <!-- Navigation -->
+            <div class="tabs">
+                <button id="inventory-tab" class="tab active">Inventory</button>
+                <button id="shopping-tab" class="tab">Shopping</button>
+                <button id="insights-tab" class="tab">Insights</button>
+            </div>
+
+            <!-- Inventory Content -->
+            <div id="inventory-content" class="content">
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card kpi-inventory">
+                        <div class="kpi-label">Current Value</div>
+                        <div class="kpi-value" id="inventory-kpi">$0.00</div>
+                        <div class="kpi-description">Items in home</div>
+                    </div>
+                    <div class="kpi-card kpi-wasted">
+                        <div class="kpi-label">Wasted</div>
+                        <div class="kpi-value" id="wasted-kpi">$0.00</div>
+                        <div class="kpi-description">This month</div>
+                    </div>
+                    <div class="kpi-card kpi-at-risk">
+                        <div class="kpi-label">At Risk</div>
+                        <div class="kpi-value" id="at-risk-kpi">$0.00</div>
+                        <div class="kpi-description">Expires ≤3 days</div>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div id="notifications-container"></div>
+
+                <!-- Scanner -->
+                <div class="scanner-card">
+                    <div class="scanner-icon">📄</div>
+                    <h3 class="scanner-title">Scan New Receipt</h3>
+                    <p class="scanner-subtitle">Add items from your latest shopping trip</p>
+                    <button onclick="scanDemoReceipt()" class="scan-btn">
+                        📷 Scan Receipt
+                    </button>
+                </div>
+
+                <!-- Categories -->
+                <div class="category-grid">
+                    <!-- Fridge -->
+                    <div class="category-card">
+                        <div class="category-header">
+                            <div class="category-icon category-icon-fridge">🥛</div>
+                            <div class="category-info">
+                                <h3>Fridge</h3>
+                                <p><span id="fridge-count">0</span> items</p>
+                            </div>
+                        </div>
+                        <div class="category-content" id="fridge-items">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🥛</div>
+                                <p>No perishable items</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pantry -->
+                    <div class="category-card">
+                        <div class="category-header">
+                            <div class="category-icon category-icon-pantry">🥫</div>
+                            <div class="category-info">
+                                <h3>Pantry</h3>
+                                <p><span id="pantry-count">0</span> items</p>
+                            </div>
+                        </div>
+                        <div class="category-content" id="pantry-items">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🥫</div>
+                                <p>No pantry items</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Household -->
+                    <div class="category-card">
+                        <div class="category-header">
+                            <div class="category-icon category-icon-household">🧴</div>
+                            <div class="category-info">
+                                <h3>Household</h3>
+                                <p><span id="household-count">0</span> items</p>
+                            </div>
+                        </div>
+                        <div class="category-content" id="household-items">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">🧴</div>
+                                <p>No household items</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shopping Content -->
+            <div id="shopping-content" class="content hidden">
+                <div id="shopping-list-display">
+                    <div class="shopping-list-card">
+                        <div class="shopping-list-header">
+                            <div class="shopping-list-icon">🛒</div>
+                            <div class="shopping-list-title">Shopping List</div>
+                            <div class="shopping-list-count" id="shopping-count">0 items</div>
+                        </div>
+                        <div class="shopping-list-items" id="shopping-items">
+                            No items in shopping list
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights Content -->
+            <div id="insights-content" class="content hidden">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📊</div>
+                    <p>Insights coming soon!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quantity Modal -->
+    <div id="quantity-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="quantity-modal-title">How many did you finish?</h3>
+            <div class="quantity-grid" id="quantity-options">
+                <!-- Dynamically populated -->
+            </div>
+            <div class="modal-actions">
+                <button onclick="cancelQuantity()" class="btn-secondary">Cancel</button>
+                <button onclick="confirmQuantity()" class="btn-primary">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Percentage Modal -->
+    <div id="percentage-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="percentage-modal-title">What percentage did you use?</h3>
+            <p style="color: #6b7280; margin-bottom: 16px; text-align: center;" id="percentage-description">Select how much of the item was actually consumed</p>
+            
+            <div class="percentage-grid">
+                <button class="percentage-btn waste" data-percentage="0">
+                    <div class="percentage-value">0%</div>
+                    <div class="percentage-label">Wasted</div>
+                </button>
+                <button class="percentage-btn" data-percentage="25">
+                    <div class="percentage-value">25%</div>
+                    <div class="percentage-label">Quarter</div>
+                </button>
+                <button class="percentage-btn" data-percentage="50">
+                    <div class="percentage-value">50%</div>
+                    <div class="percentage-label">Half</div>
+                </button>
+                <button class="percentage-btn" data-percentage="75">
+                    <div class="percentage-value">75%</div>
+                    <div class="percentage-label">Most</div>
+                </button>
+                <button class="percentage-btn selected" data-percentage="100">
+                    <div class="percentage-value">100%</div>
+                    <div class="percentage-label">All used</div>
+                </button>
+                <button class="percentage-btn" data-percentage="custom">
+                    <div class="percentage-value">Other</div>
+                    <div class="percentage-label">Custom</div>
+                </button>
+            </div>
+            
+            <div class="modal-actions">
+                <button onclick="cancelPercentage()" class="btn-secondary">Cancel</button>
+                <button onclick="confirmPercentage()" class="btn-primary">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping List Modal -->
+    <div id="shopping-modal" class="modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Item Used!</h3>
+            <div class="shopping-question">
+                <p>Add <strong id="shopping-item-name">item</strong> to shopping list?</p>
+                <div class="shopping-actions">
+                    <button onclick="addToShoppingList()" class="btn-shopping btn-shopping-yes">Yes, add it</button>
+                    <button onclick="skipShoppingList()" class="btn-shopping btn-shopping-no">No thanks</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // FRESH START - Application state
+        let inventory = [];
+        let shoppingList = [];
+        let currentItem = null;
+        let selectedQuantity = 1;
+        let selectedPercentage = 100;
+        let totalWastedValue = 0; // This is the key variable!
+
+        // Demo data
+        const demoReceiptItems = [
+            { name: 'Organic Milk', quantity: 1, category: 'fridge', emoji: '🥛', expiry: getDateFromDays(7), cost: 4.99 },
+            { name: 'Greek Yogurt', quantity: 4, category: 'fridge', emoji: '🥛', expiry: getDateFromDays(2), cost: 1.50 },
+            { name: 'Baby Spinach', quantity: 1, category: 'fridge', emoji: '🥬', expiry: getDateFromDays(1), cost: 3.49 },
+            { name: 'Chicken Breast', quantity: 1, category: 'fridge', emoji: '🍗', expiry: getDateFromDays(0), cost: 8.99 },
+            { name: 'Whole Wheat Bread', quantity: 1, category: 'pantry', emoji: '🍞', expiry: getDateFromDays(14), cost: 2.99 },
+            { name: 'Pasta Sauce', quantity: 2, category: 'pantry', emoji: '🍝', expiry: getDateFromDays(365), cost: 2.49 },
+            { name: 'Rice', quantity: 1, category: 'pantry', emoji: '🍚', expiry: getDateFromDays(730), cost: 3.99 },
+            { name: 'Dish Soap', quantity: 1, category: 'household', emoji: '🧽', expiry: null, cost: 3.99 },
+            { name: 'Toothpaste', quantity: 2, category: 'household', emoji: '🦷', expiry: getDateFromDays(365), cost: 4.49 },
+            { name: 'Shampoo', quantity: 1, category: 'household', emoji: '🧴', expiry: null, cost: 7.99 }
+        ];
+
+        function init() {
+            const hasItems = inventory.length > 0;
+            
+            if (hasItems) {
+                showMainApp();
+            } else {
+                showWelcomeScreen();
+            }
+            
+            document.getElementById('inventory-tab').addEventListener('click', () => showTab('inventory'));
+            document.getElementById('shopping-tab').addEventListener('click', () => showTab('shopping'));
+            document.getElementById('insights-tab').addEventListener('click', () => showTab('insights'));
+            
+            updateUI();
+        }
+
+        function showWelcomeScreen() {
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+        }
+
+        function showMainApp() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(`${tabName}-content`).classList.remove('hidden');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        function scanDemoReceipt() {
+            demoReceiptItems.forEach(receiptItem => {
+                const existingItem = inventory.find(item => 
+                    item.name === receiptItem.name && 
+                    item.category === receiptItem.category &&
+                    item.consumed < item.quantity
+                );
+                
+                if (existingItem) {
+                    existingItem.quantity += receiptItem.quantity;
+                } else {
+                    inventory.push({
+                        id: Date.now() + Math.random(),
+                        ...receiptItem,
+                        dateAdded: new Date().toISOString(),
+                        consumed: 0
+                    });
+                }
+            });
+            
+            shoppingList = [];
+            showMainApp();
+            updateUI();
+            
+            setTimeout(() => {
+                const totalItems = demoReceiptItems.reduce((sum, item) => sum + item.quantity, 0);
+                alert(`Receipt scanned! Processed ${totalItems} items.`);
+            }, 500);
+        }
+
+        function updateUI() {
+            updateInventoryDisplay();
+            updateShoppingListDisplay();
+            updateCounts();
+            updateNotifications();
+            updateKPIs();
+        }
+
+        function updateKPIs() {
+            alert(`🔍 KPI UPDATE - totalWastedValue: ${totalWastedValue.toFixed(2)}`);
+            
+            const currentValue = inventory.reduce((sum, item) => {
+                const remaining = item.quantity - item.consumed;
+                const itemValue = item.cost * remaining;
+                return sum + itemValue;
+            }, 0);
+
+            const atRiskValue = inventory.reduce((sum, item) => {
+                if (!item.expiry || item.consumed >= item.quantity) return sum;
+                const daysLeft = calculateDaysLeft(item.expiry);
+                if (daysLeft <= 3 && daysLeft >= 0) {
+                    const remaining = item.quantity - item.consumed;
+                    const itemValue = item.cost * remaining;
+                    return sum + itemValue;
+                }
+                return sum;
+            }, 0);
+
+            document.getElementById('inventory-kpi').textContent = `${currentValue.toFixed(2)}`;
+            document.getElementById('wasted-kpi').textContent = `${totalWastedValue.toFixed(2)}`;
+            document.getElementById('at-risk-kpi').textContent = `${atRiskValue.toFixed(2)}`;
+        }
+
+        function updateNotifications() {
+            const container = document.getElementById('notifications-container');
+            const expiringItems = inventory.filter(item => {
+                if (!item.expiry || item.consumed >= item.quantity) return false;
+                const daysLeft = calculateDaysLeft(item.expiry);
+                return daysLeft <= 3 && daysLeft >= 0;
+            });
+
+            const expiredItems = inventory.filter(item => {
+                if (!item.expiry || item.consumed >= item.quantity) return false;
+                return calculateDaysLeft(item.expiry) < 0;
+            });
+
+            if (expiredItems.length === 0 && expiringItems.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let notificationsHTML = '';
+
+            if (expiredItems.length > 0) {
+                notificationsHTML += `
+                    <div class="notification-card urgent">
+                        <div class="notification-header">
+                            <div class="notification-icon">⚠️</div>
+                            <div class="notification-title">Items Expired!</div>
+                        </div>
+                        <div class="notification-items">
+                            ${expiredItems.map(item => `• ${item.name} (expired ${Math.abs(calculateDaysLeft(item.expiry))} days ago)`).join('<br>')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (expiringItems.length > 0) {
+                const todayItems = expiringItems.filter(item => calculateDaysLeft(item.expiry) === 0);
+                const soonItems = expiringItems.filter(item => calculateDaysLeft(item.expiry) > 0);
+
+                if (todayItems.length > 0) {
+                    notificationsHTML += `
+                        <div class="notification-card urgent">
+                            <div class="notification-header">
+                                <div class="notification-icon">🚨</div>
+                                <div class="notification-title">Expires Today!</div>
+                            </div>
+                            <div class="notification-items">
+                                ${todayItems.map(item => `• ${item.name} (expires today)`).join('<br>')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (soonItems.length > 0) {
+                    notificationsHTML += `
+                        <div class="notification-card">
+                            <div class="notification-header">
+                                <div class="notification-icon">⏰</div>
+                                <div class="notification-title">Expiring Soon</div>
+                            </div>
+                            <div class="notification-items">
+                                ${soonItems.map(item => {
+                                    const days = calculateDaysLeft(item.expiry);
+                                    return `• ${item.name} (${days} day${days === 1 ? '' : 's'} left)`;
+                                }).join('<br>')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            container.innerHTML = notificationsHTML;
+        }
+
+        function updateInventoryDisplay() {
+            const categories = ['fridge', 'pantry', 'household'];
+            
+            categories.forEach(category => {
+                const items = inventory.filter(item => 
+                    item.category === category && item.consumed < item.quantity
+                );
+                const container = document.getElementById(`${category}-items`);
+                
+                if (items.length === 0) {
+                    const categoryNames = {
+                        fridge: 'perishable items',
+                        pantry: 'pantry items',
+                        household: 'household items'
+                    };
+                    const categoryEmojis = {
+                        fridge: '🥛',
+                        pantry: '🥫',
+                        household: '🧴'
+                    };
+                    
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">${categoryEmojis[category]}</div>
+                            <p>No ${categoryNames[category]}</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="items-list">
+                            ${items.map(item => renderItem(item)).join('')}
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function renderItem(item) {
+            const remaining = item.quantity - item.consumed;
+            const isExpiring = item.expiry && calculateDaysLeft(item.expiry) <= 3;
+            const isExpired = item.expiry && calculateDaysLeft(item.expiry) < 0;
+            
+            let statusClass = '';
+            let statusText = '';
+            
+            if (isExpired) {
+                statusClass = 'expired';
+                statusText = 'Expired';
+            } else if (isExpiring) {
+                statusClass = 'expiring-soon';
+                statusText = `${calculateDaysLeft(item.expiry)}d left`;
+            } else if (item.expiry) {
+                statusText = `${calculateDaysLeft(item.expiry)}d left`;
+            } else {
+                statusText = 'No expiry';
+            }
+            
+            const quantityText = remaining > 1 ? ` • ${remaining} left` : '';
+            const metaText = `${statusText}${quantityText}`;
+            
+            return `
+                <div class="item-card ${statusClass}">
+                    <div class="item-row">
+                        <div class="item-left">
+                            <div class="item-emoji">${item.emoji}</div>
+                            <div class="item-details">
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-meta">${metaText}</div>
+                            </div>
+                        </div>
+                        <div class="item-action">
+                            <button onclick="markAsFinished('${item.id}')" class="action-btn btn-finished">Finished</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateShoppingListDisplay() {
+            const container = document.getElementById('shopping-items');
+            const countElement = document.getElementById('shopping-count');
+            
+            if (shoppingList.length === 0) {
+                container.textContent = 'No items in shopping list';
+                countElement.textContent = '0 items';
+            } else {
+                container.innerHTML = shoppingList.map(item => `• ${item}`).join('<br>');
+                countElement.textContent = `${shoppingList.length} items`;
+            }
+        }
+
+        function updateCounts() {
+            const categories = ['fridge', 'pantry', 'household'];
+            categories.forEach(category => {
+                const count = inventory.filter(item => 
+                    item.category === category && item.consumed < item.quantity
+                ).length;
+                document.getElementById(`${category}-count`).textContent = count;
+            });
+        }
+
+        function markAsFinished(itemId) {
+            const item = inventory.find(i => i.id == itemId);
+            if (!item) return;
+            
+            currentItem = item;
+            const remaining = item.quantity - item.consumed;
+            
+            if (remaining === 1) {
+                selectedQuantity = 1;
+                showPercentageModal(item);
+            } else {
+                showQuantityModal(item);
+            }
+        }
+
+        function showQuantityModal(item) {
+            const remaining = item.quantity - item.consumed;
+            document.getElementById('quantity-modal-title').textContent = `How many ${item.name} did you finish?`;
+            
+            const optionsHTML = [];
+            for (let i = 1; i <= Math.min(remaining, 4); i++) {
+                optionsHTML.push(`
+                    <button class="quantity-btn ${i === 1 ? 'selected' : ''}" 
+                            onclick="selectQuantity(${i})" 
+                            data-quantity="${i}">
+                        ${i}
+                    </button>
+                `);
+            }
+            
+            if (remaining > 4) {
+                optionsHTML.push(`
+                    <button class="quantity-btn" 
+                            onclick="selectQuantity(${remaining})" 
+                            data-quantity="${remaining}">
+                        All ${remaining}
+                    </button>
+                `);
+            }
+            
+            document.getElementById('quantity-options').innerHTML = optionsHTML.join('');
+            selectedQuantity = 1;
+            
+            document.getElementById('quantity-modal').classList.add('show');
+        }
+
+        function showPercentageModal(item) {
+            const quantityText = selectedQuantity > 1 
+                ? `${selectedQuantity} ${item.name}` 
+                : `${item.name}`;
+            
+            document.getElementById('percentage-modal-title').textContent = 
+                `What percentage of ${quantityText} did you use?`;
+            
+            const modalDescription = selectedQuantity > 1
+                ? `Select the overall percentage used across all ${selectedQuantity} items`
+                : `Select how much of the item was actually consumed`;
+                
+            document.getElementById('percentage-description').textContent = modalDescription;
+            
+            selectedPercentage = 100;
+            document.querySelectorAll('.percentage-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector('[data-percentage="100"]').classList.add('selected');
+            
+            document.getElementById('percentage-modal').classList.add('show');
+        }
+
+        function selectQuantity(quantity) {
+            selectedQuantity = quantity;
+            
+            document.querySelectorAll('.quantity-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`[data-quantity="${quantity}"]`).classList.add('selected');
+        }
+
+        function cancelQuantity() {
+            document.getElementById('quantity-modal').classList.remove('show');
+            currentItem = null;
+        }
+
+        function confirmQuantity() {
+            document.getElementById('quantity-modal').classList.remove('show');
+            
+            if (currentItem) {
+                showPercentageModal(currentItem);
+            }
+        }
+
+        // Percentage modal event handler
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.percentage-btn')) {
+                const btn = e.target.closest('.percentage-btn');
+                const percentage = btn.dataset.percentage;
+                
+                if (percentage === 'custom') {
+                    const customPercentage = prompt('Enter custom usage percentage (0-100):');
+                    if (customPercentage !== null) {
+                        const value = parseInt(customPercentage);
+                        if (value >= 0 && value <= 100) {
+                            selectedPercentage = value;
+                        } else {
+                            alert('Please enter a value between 0 and 100');
+                            return;
+                        }
+                    } else {
+                        return;
+                    }
+                } else {
+                    selectedPercentage = parseInt(percentage);
+                }
+                
+                document.querySelectorAll('.percentage-btn').forEach(b => {
+                    b.classList.remove('selected');
+                });
+                
+                btn.classList.add('selected');
+            }
+        });
+
+        function cancelPercentage() {
+            document.getElementById('percentage-modal').classList.remove('show');
+            currentItem = null;
+        }
+
+        function confirmPercentage() {
+            document.getElementById('percentage-modal').classList.remove('show');
+            
+            if (currentItem) {
+                // THIS IS THE FIXED WASTE CALCULATION!
+                alert(`🔧 PROCESSING: ${currentItem.name} - Quantity: ${selectedQuantity} - Percentage: ${selectedPercentage}%`);
+                
+                const itemCost = currentItem.cost;
+                const totalValueOfSelectedUnits = itemCost * selectedQuantity;
+                const wastePercentage = 100 - selectedPercentage;
+                const wasteValue = (totalValueOfSelectedUnits * wastePercentage) / 100;
+                
+                alert(`💸 WASTE CALCULATION: ${totalValueOfSelectedUnits.toFixed(2)} total × ${wastePercentage}% waste = ${wasteValue.toFixed(2)} wasted`);
+                
+                // Add to total waste tracking
+                if (wasteValue > 0) {
+                    const oldTotal = totalWastedValue;
+                    totalWastedValue += wasteValue;
+                    alert(`📊 WASTE TRACKING: Was ${oldTotal.toFixed(2)}, adding ${wasteValue.toFixed(2)}, now ${totalWastedValue.toFixed(2)}`);
+                }
+                
+                // Update consumption
+                currentItem.consumed += selectedQuantity;
+                
+                // Show shopping list question
+                document.getElementById('shopping-item-name').textContent = currentItem.name;
+                document.getElementById('shopping-modal').classList.add('show');
+                
+                updateUI();
+            }
+        }
+
+        function addToShoppingList() {
+            if (currentItem && !shoppingList.includes(currentItem.name)) {
+                shoppingList.push(currentItem.name);
+            }
+            
+            document.getElementById('shopping-modal').classList.remove('show');
+            currentItem = null;
+            updateUI();
+        }
+
+        function skipShoppingList() {
+            document.getElementById('shopping-modal').classList.remove('show');
+            currentItem = null;
+        }
+
+        function calculateDaysLeft(expiryDate) {
+            const today = new Date();
+            const expiry = new Date(expiryDate);
+            const diffTime = expiry - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+
+        function getDateFromDays(days) {
+            const date = new Date();
+            date.setDate(date.getDate() + days);
+            return date.toISOString().split('T')[0];
+        }
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
