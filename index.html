@@ -1308,9 +1308,15 @@
                 // Update consumption
                 currentItem.consumed += selectedQuantity;
                 
-                // Show shopping list question
+                // Only show shopping list if completely out of stock
+                if (currentItem.consumed >= currentItem.quantity) {
+                // Completely out - show shopping list
                 document.getElementById('shopping-item-name').textContent = currentItem.name;
                 document.getElementById('shopping-modal').classList.add('show');
+                } else {
+                // Still have items left - skip shopping list
+                currentItem = null;
+            }
                 
                 updateUI();
             }
