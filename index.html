@@ -936,6 +936,8 @@
                         ...receiptItem,
                         dateAdded: new Date().toISOString(),
                         consumed: 0
+                        opened: receiptItem.category === 'fridge' ? true : false // This line is key!
+
                     });
                 }
             });
