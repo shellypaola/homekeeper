@@ -922,35 +922,34 @@
 
         function scanDemoReceipt() {
             demoReceiptItems.forEach(receiptItem => {
-                const existingItem = inventory.find(item => 
-                    item.name === receiptItem.name && 
-                    item.category === receiptItem.category &&
-                    item.consumed < item.quantity
-                );
-                
-                if (existingItem) {
-                    existingItem.quantity += receiptItem.quantity;
-                } else {
-                    inventory.push({
-                        id: Date.now() + Math.random(),
-                        ...receiptItem,
-                        dateAdded: new Date().toISOString(),
-                        consumed: 0
-                        opened: receiptItem.category === 'fridge' ? true : false // This line is key!
-
-                    });
-                }
+            const existingItem = inventory.find(item => 
+                item.name === receiptItem.name && 
+                item.category === receiptItem.category &&
+                item.consumed < item.quantity
+        );
+        
+            if (existingItem) {
+                existingItem.quantity += receiptItem.quantity;
+            } else {
+                inventory.push({
+                    id: Date.now() + Math.random(),
+                    ...receiptItem,
+                    dateAdded: new Date().toISOString(),
+                    consumed: 0,
+                    opened: receiptItem.category === 'fridge' ? true : false
             });
-            
-            shoppingList = [];
-            showMainApp();
-            updateUI();
-            
-            setTimeout(() => {
-                const totalItems = demoReceiptItems.reduce((sum, item) => sum + item.quantity, 0);
-                alert(`Receipt scanned! Processed ${totalItems} items.`);
-            }, 500);
         }
+    });
+    
+    shoppingList = [];
+    showMainApp();
+    updateUI();
+    
+    setTimeout(() => {
+        const totalItems = demoReceiptItems.reduce((sum, item) => sum + item.quantity, 0);
+        alert(`Receipt scanned! Processed ${totalItems} items.`);
+    }, 500);
+}
 
         function updateUI() {
             updateInventoryDisplay();
